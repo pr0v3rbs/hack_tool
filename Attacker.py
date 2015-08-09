@@ -3,7 +3,7 @@ import telnetlib
 from socket import *
 
 p8 = lambda x : struct.pack("<L", x)
-p16 = lambda x : p8(x & 0xffffffff) + p8((x & 0xffffffff00000000) >> 32)
+p16 = lambda x : struct.pack("<Q", x)
 
 def ReadUntil(s, chkStr, isPrint = True) :
     chkLen = len(chkStr)
