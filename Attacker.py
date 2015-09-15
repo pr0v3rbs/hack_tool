@@ -1,5 +1,7 @@
 import struct
 import telnetlib
+import shellcodelib
+import time
 from socket import *
 
 p8 = lambda x : struct.pack("<L", x)
