@@ -7,21 +7,15 @@ from socket import *
 p8 = lambda x : struct.pack("<L", x)
 p16 = lambda x : struct.pack("<Q", x)
 
-def ReadUntil(s, chkStr, isPrint = True) :
+def ReadUntil(s, chkStr) :
     chkLen = len(chkStr)
-    data = s.recv(1)
+    data = s.recv(chkLen)
     while True :
-        while data[-1] != chkStr[0] :
-            data += s.recv(1)
-        tem = s.recv(chkLen - 1)
-        data += tem
-        # tem possible part of chkStr
-        # need to fix
-        if tem == chkStr[1:] :
+        if data[-1] == chkStr[-1] and data[-chkLen:] == chkStr:
             break
-        
-    if isPrint :
-        print data
+        data += s.recv(1)
+
+    return data
 
 HOST = "hack.me"
 PORT = 1234
