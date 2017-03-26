@@ -24,6 +24,9 @@ class Pwnable:
 
         return self.sock
 
+    def SendLine(self, msg):
+        self.sock.send(msg + "\n")
+
     def ReadUntil(self, chkStr):
         data = self.sock.recv(len(chkStr))
         while not data.endswith(chkStr):
