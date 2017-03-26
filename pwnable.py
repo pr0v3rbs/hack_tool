@@ -1,33 +1,42 @@
 import struct
 import telnetlib
-import shellcodelib
-import time
 from socket import *
 
-p4 = lambda x : struct.pack("<L", x)
-p8 = lambda x : struct.pack("<Q", x)
-up4 = lambda x : struct.unpack("<L", x)[0]
-up8 = lambda x : struct.unpack("<Q", x)[0]
+class Pwnable:
+    def __init__(self):
+        self.sock = None
 
-def ReadUntil(s, chkStr) :
-    data = s.recv(len(chkStr))
-    while not data.endswith(chkStr) :
-        tmp = s.recv(1)
-        if not tmp: break
-        data += tmp
+    def p4(self, x):
+        return struct.pack("<L", x)
 
-    return data
+    def p8(self, x):
+        return struct.pack("<Q", x)
 
-HOST = "hack.me"
-PORT = 1234
+    def up4(self, x):
+        return struct.unpack("<L", x)[0]
 
-s = socket(AF_INET, SOCK_STREAM)
-s.connect((HOST, PORT))
+    def up8(self, x):
+        return struct.unpack("<Q", x)[0]
 
-#exploit!
+    def Connect(self, HOST, PORT):
+        self.sock = socket(AF_INET, SOCK_STREAM)
+        sock.connect((HOST, PORT))
 
-t = telnetlib.Telnet()
-t.sock = s
-t.interact()
+        return self.sock
 
-s.close()
+    def ReadUntil(self, chkStr):
+        data = self.sock.recv(len(chkStr))
+        while not data.endswith(chkStr):
+            tmp = self.sock.recv(1)
+            if not tmp: break
+            data += tmp
+
+        return data
+
+    def Interact(self):
+        t = telnetlib.Telnet()
+        t.sock = self.sock
+        t.interact()
+
+    def Close(self):
+        self.sock.close();
