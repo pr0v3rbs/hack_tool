@@ -20,7 +20,7 @@ class Pwnable:
 
     def Connect(self, HOST, PORT):
         self.sock = socket(AF_INET, SOCK_STREAM)
-        sock.connect((HOST, PORT))
+        self.sock.connect((HOST, PORT))
 
         return self.sock
 
