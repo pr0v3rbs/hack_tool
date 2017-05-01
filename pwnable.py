@@ -1,10 +1,15 @@
 import struct
 import telnetlib
+import subprocess
+import pty
+import os
 from socket import *
 
 class Pwnable:
     def __init__(self):
         self.sock = None
+        self.proc = None
+        self.isRemote = None
 
     def p4(self, x):
         return struct.pack("<L", x)
@@ -19,17 +24,32 @@ class Pwnable:
         return struct.unpack("<Q", x)[0]
 
     def Connect(self, HOST, PORT):
+        self.isRemote = True
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.connect((HOST, PORT))
 
+    def Process(self, command):
+        self.isRemote = False
+        args = command.split()
+        self.master_fd, slave_fd = pty.openpty()
+        self.proc = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=slave_fd, stderr=subprocess.STDOUT, close_fds=True)
+        os.close(slave_fd)
+
     def Send(self, msg):
-        self.sock.send(msg);
+        if self.isRemote:
+            self.sock.send(msg)
+        else:
+            self.proc.stdin.write(msg)
+            self.proc.stdin.flush()
 
     def SendLine(self, msg):
-        self.Send(msd + "\n")
+        self.Send(msg + "\n")
 
     def Read(self, size):
-        return self.sock.recv(size)
+        if self.isRemote:
+            return self.sock.recv(size)
+        else:
+            return os.read(self.master_fd, size)
 
     def ReadUntil(self, chkStr):
         data = self.Read(len(chkStr))
@@ -41,9 +61,17 @@ class Pwnable:
         return data
 
     def Interact(self):
-        t = telnetlib.Telnet()
-        t.sock = self.sock
-        t.interact()
+        if self.isRemote:
+            t = telnetlib.Telnet()
+            t.sock = self.sock
+            t.interact()
+        else:
+            while True:
+                self.Send(raw_input())
+                print self.Read() # TODO: Need to read until get EOF
 
     def Close(self):
-        self.sock.close();
+        if self.isRemote:
+            self.sock.close();
+        else:
+            os.close(self.master_fd)
