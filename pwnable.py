@@ -22,8 +22,6 @@ class Pwnable:
         self.sock = socket(AF_INET, SOCK_STREAM)
         self.sock.connect((HOST, PORT))
 
-        return self.sock
-
     def Send(self, msg):
         self.sock.send(msg);
 
