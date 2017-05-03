@@ -65,10 +65,10 @@ class Pwnable:
             t = telnetlib.Telnet()
             t.sock = self.sock
             t.interact()
-        else:
+        else:   # TODO: Need to use non blocking I/O
             while True:
                 self.Send(raw_input())
-                print self.Read() # TODO: Need to read until get EOF
+                print self.Read(65535)
 
     def Close(self):
         if self.isRemote:
