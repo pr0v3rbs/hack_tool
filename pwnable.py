@@ -70,7 +70,7 @@ class Pwnable:
         else:
             thread.start_new_thread(self.InteractRead, ())
             while True:
-                self.Send(raw_input())
+                self.Sendline(raw_input())
 
     def InteractRead(self):
         while True:
