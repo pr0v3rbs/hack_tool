@@ -42,7 +42,7 @@ class Pwnable:
             self.proc.stdin.write(msg)
             self.proc.stdin.flush()
 
-    def SendLine(self, msg):
+    def Sendline(self, msg):
         self.Send(msg + "\n")
 
     def Read(self, size):
