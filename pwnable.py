@@ -3,6 +3,8 @@ import telnetlib
 import subprocess
 import pty
 import os
+import sys
+import thread
 from socket import *
 
 class Pwnable:
@@ -65,10 +67,14 @@ class Pwnable:
             t = telnetlib.Telnet()
             t.sock = self.sock
             t.interact()
-        else:   # TODO: Need to use non blocking I/O
+        else:
+            thread.start_new_thread(self.InteractRead, ())
             while True:
                 self.Send(raw_input())
-                print self.Read(65535)
+
+    def InteractRead(self):
+        while True:
+            sys.stdout.write(self.Read(65536))
 
     def Close(self):
         if self.isRemote:
