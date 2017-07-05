@@ -3,6 +3,7 @@ import telnetlib
 import subprocess
 import pty
 import os
+import time
 import sys
 import thread
 from socket import *
@@ -51,6 +52,7 @@ class Pwnable:
         if self.isRemote:
             return self.sock.recv(size)
         else:
+            time.sleep(0.01)
             return os.read(self.master_fd, size)
 
     def ReadUntil(self, chkStr):
