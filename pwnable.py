@@ -8,23 +8,23 @@ import sys
 import thread
 from socket import *
 
+def p4(self, x):
+    return struct.pack("<L", x)
+
+def p8(self, x):
+    return struct.pack("<Q", x)
+
+def up4(self, x):
+    return struct.unpack("<L", x)[0]
+
+def up8(self, x):
+    return struct.unpack("<Q", x)[0]
+
 class Pwnable:
     def __init__(self):
         self.sock = None
         self.proc = None
         self.isRemote = None
-
-    def p4(self, x):
-        return struct.pack("<L", x)
-
-    def p8(self, x):
-        return struct.pack("<Q", x)
-
-    def up4(self, x):
-        return struct.unpack("<L", x)[0]
-
-    def up8(self, x):
-        return struct.unpack("<Q", x)[0]
 
     def Connect(self, HOST, PORT):
         self.isRemote = True
