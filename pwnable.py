@@ -8,16 +8,16 @@ import sys
 import thread
 from socket import *
 
-def p4(self, x):
+def p4(x):
     return struct.pack("<L", x)
 
-def p8(self, x):
+def p8(x):
     return struct.pack("<Q", x)
 
-def up4(self, x):
+def up4(x):
     return struct.unpack("<L", x)[0]
 
-def up8(self, x):
+def up8(x):
     return struct.unpack("<Q", x)[0]
 
 class Pwnable:
